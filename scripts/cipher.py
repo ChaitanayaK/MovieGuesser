@@ -21,14 +21,12 @@ def encrypt(name: str, guessed: list):
 
 
 def movieData(url):
-    error = 0
-    while error < 5:
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return response.json()
-        except:
-            error += 1
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except:
+        return None
 
 if __name__ == "__main__":
     url = "http://www.omdbapi.com/?t=Cocktail&y=2012"

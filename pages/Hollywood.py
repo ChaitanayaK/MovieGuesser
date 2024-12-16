@@ -83,33 +83,37 @@ else:
 
     movie_data = cipher.movieData(link)
 
-    col1, col2 = st.columns([2, 3])
-    with col1:
-        st.image(movie_data['Poster'], width=200)
-    with col2:
-        st.title(movie_data['Title'])
-        st.subheader(f"{movie_data['Year']} - {movie_data['Genre']}")
-        st.write(f"**Director:** {movie_data['Director']}")
-        st.write(f"**Plot:** {movie_data['Plot']}")
-        st.write("**Ratings:**")
-        imdb_rating = float(movie_data['imdbRating'])
-        if imdb_rating >= 8:
-            st.success(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
-        elif imdb_rating >= 7:
-            st.info(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
-        else:
-            st.warning(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
+    if movie_data:
+        col1, col2 = st.columns([2, 3])
+        with col1:
+            st.image(movie_data['Poster'], width=200)
+        with col2:
+            st.title(movie_data['Title'])
+            st.subheader(f"{movie_data['Year']} - {movie_data['Genre']}")
+            st.write(f"**Director:** {movie_data['Director']}")
+            st.write(f"**Plot:** {movie_data['Plot']}")
+            st.write("**Ratings:**")
+            imdb_rating = float(movie_data['imdbRating'])
+            if imdb_rating >= 8:
+                st.success(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
+            elif imdb_rating >= 7:
+                st.info(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
+            else:
+                st.warning(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
 
-        st.write(f"**Language:** {movie_data['Language']}")
-        st.write(f"**Country:** {movie_data['Country']}")
+            st.write(f"**Language:** {movie_data['Language']}")
+            st.write(f"**Country:** {movie_data['Country']}")
 
-    st.markdown("""
-    <style>
-    .stText {
-        text-align: justify;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+        st.markdown("""
+        <style>
+        .stText {
+            text-align: justify;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+    else:
+        st.write(st.session_state.movie)
 
     if st.button('Next Challenge'):
         st.session_state.clear()
