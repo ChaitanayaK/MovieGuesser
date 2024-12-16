@@ -1,7 +1,7 @@
 import requests
 
 def encrypt(name: str, guessed: list):
-    vowels = ['a', 'e', 'i', 'o', 'u', '/', ',', ':', '"', '?', '-']
+    vowels = ['a', 'e', 'i', 'o', 'u', '/', ',', ':', '"', '?', '-', '.', '!', '+']
     encrypted = []
     name = name.lower()
     shortenedList = guessed.copy()
@@ -21,11 +21,14 @@ def encrypt(name: str, guessed: list):
 
 
 def movieData(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        return response.json()
-    except:
+    for _ in range (100):
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.json()
+        except:
+            pass
+    else:
         return None
 
 if __name__ == "__main__":

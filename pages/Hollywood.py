@@ -53,17 +53,16 @@ if guess:
         st.session_state.store.append(newList)
         result = cipher.encrypt(st.session_state.movie['Title'], newList)
         st.session_state.win = result['win']
+        st.session_state.lose = True if 9 - result['length'] == 0 else False
         st.session_state.store.append(result)
 
 if 'win' in st.session_state and not st.session_state.win and not st.session_state.lose:
     for i, element in enumerate (st.session_state.store):
         if i%2 == 0:
-            if  i >= len(st.session_state.store)-2:
-                target = list("HOLLYWOOD")
+            if i >= len(st.session_state.store)-2:
+                target = ['H', 'O', 'L', 'L', 'Y', 'W', 'O', 'O', 'D']
                 for i in range (element['length']):
                     target[i] = "-"
-                if tuple(target) == 1 and tuple(target)[0] == '-':
-                    st.session_state.lose = True
                 target = "## " + " ".join(target)
                 st.write(target)
             # Encrypted movie name 
@@ -72,6 +71,7 @@ if 'win' in st.session_state and not st.session_state.win and not st.session_sta
         else:
             # Guessed and Guesses left
             st.write("##### Your Guesses:  " + " , ".join(element))
+
 
 else:
     if st.session_state.win:
@@ -82,8 +82,8 @@ else:
     link = f"http://www.omdbapi.com/?t={st.session_state.movie['Title'].strip().replace(' ', '_')}&y={st.session_state.movie['Year']}&plot=short&apikey={os.environ.get('API_KEY')}"
 
     movie_data = cipher.movieData(link)
-
-    if movie_data:
+    print(movie_data)
+    try:
         col1, col2 = st.columns([2, 3])
         with col1:
             st.image(movie_data['Poster'], width=200)
@@ -92,17 +92,20 @@ else:
             st.subheader(f"{movie_data['Year']} - {movie_data['Genre']}")
             st.write(f"**Director:** {movie_data['Director']}")
             st.write(f"**Plot:** {movie_data['Plot']}")
-            st.write("**Ratings:**")
-            imdb_rating = float(movie_data['imdbRating'])
-            if imdb_rating >= 8:
-                st.success(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
-            elif imdb_rating >= 7:
-                st.info(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
-            else:
-                st.warning(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
+            try:
+                st.write("**Ratings:**")
+                imdb_rating = float(movie_data['imdbRating'])
+                if imdb_rating >= 8:
+                    st.success(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
+                elif imdb_rating >= 7:
+                    st.info(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
+                else:
+                    st.warning(f"**IMDb:** {movie_data['Ratings'][0]['Value']}")
 
-            st.write(f"**Language:** {movie_data['Language']}")
-            st.write(f"**Country:** {movie_data['Country']}")
+                st.write(f"**Language:** {movie_data['Language']}")
+                st.write(f"**Country:** {movie_data['Country']}")
+            except:
+                pass
 
         st.markdown("""
         <style>
@@ -112,8 +115,8 @@ else:
         </style>
         """, unsafe_allow_html=True)
 
-    else:
-        st.write(st.session_state.movie)
+    except:
+        st.table(st.session_state.movie)
 
     if st.button('Next Challenge'):
         st.session_state.clear()
